@@ -14,7 +14,7 @@ const CLIP_EMBED_URL = '';
   /* Clip modal */
   const modal = document.getElementById('modal'), box = document.getElementById('modal-box');
   let lenis = null;
-  const close = () => { if (!modal) return; modal.classList.remove('open', 'gallery-mode'); box.classList.remove('is-img'); box.innerHTML = ''; lenis && lenis.start(); };
+  const close = () => { if (!modal) return; modal.classList.remove('open', 'gallery-mode'); box.classList.remove('is-img'); box.innerHTML = ''; lenis && lenis.start(); window.__mosaicSync && window.__mosaicSync(); };
   const openClip = () => {
     box.innerHTML = CLIP_EMBED_URL
       ? `<iframe src="${CLIP_EMBED_URL}?autoplay=1" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Luke Chase reel"></iframe>`
@@ -32,92 +32,82 @@ const CLIP_EMBED_URL = '';
   if (modal) modal.addEventListener('click', e => (e.target === modal || e.target.closest('.modal-close')) && close());
   addEventListener('keydown', e => e.key === 'Escape' && close());
 
-  /* ---------- On-set gallery: drag / swipe / wheel, buttons, progress, lightbox ---------- */
-  const track = document.querySelector('.g-track');
-  if (track) {
-    const items = [...track.querySelectorAll('.g-item')];
-    const bar = document.querySelector('.g-progress i'), count = document.querySelector('.g-count');
+  /* ---------- On-set mosaic: one featured photo, the rest reshuffle around it ---------- */
+  const mosaic = document.querySelector('.mosaic');
+  if (mosaic) {
+    const tiles = [...mosaic.querySelectorAll('.m-tile')];
     const pad = n => String(n).padStart(2, '0');
-    const max = () => track.scrollWidth - track.clientWidth;
-    const current = () => {           // item whose left edge is nearest the track's left padding
-      const left = track.getBoundingClientRect().left + parseFloat(getComputedStyle(track).paddingLeft);
-      let best = 0, d = Infinity;
-      items.forEach((it, i) => { const dd = Math.abs(it.getBoundingClientRect().left - left); if (dd < d) { d = dd; best = i; } });
-      return max() - track.scrollLeft < 4 ? items.length - 1 : best;
-    };
-    const update = () => {
-      bar.style.width = (max() > 0 ? track.scrollLeft / max() * 100 : 0) + '%';
-      count.textContent = `${pad(current() + 1)} / ${pad(items.length)}`;
-    };
-    track.addEventListener('scroll', update, { passive: true });
-    addEventListener('resize', update); addEventListener('load', update); update();
+    const INTERVAL = 3.6;                         // seconds each photo stays featured
+    const small = matchMedia('(max-width:760px)');
+    // where the featured tile sits: desktop slides left → right → centre; phones top → middle → bottom
+    const SLOTS = { wide: [[1, 1], [3, 1], [2, 1]], narrow: [[1, 1], [1, 2], [1, 3]] };
+    const SPAN = { wide: [4, 4], narrow: [4, 2] };
+    const cap = { proj: document.querySelector('.m-proj'), kind: document.querySelector('.m-kind'), count: document.querySelector('.m-count') };
+    const timerBar = document.querySelector('.m-timer i');
+    const playBtn = document.querySelector('.m-play');
+    let feat = 0, slot = 0, userPaused = reduce, hoverPaused = false, visible = false, timer = null;
 
-    // smooth programmatic scroll (eased), used by buttons + inertia
-    let anim = null;
-    const glideTo = x => {
-      cancelAnimationFrame(anim);
-      x = Math.max(0, Math.min(max(), x));
-      const from = track.scrollLeft, t0 = performance.now(), dur = 700;
-      const step = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
-        track.scrollLeft = from + (x - from) * e; if (k < 1) anim = requestAnimationFrame(step); };
-      anim = requestAnimationFrame(step);
+    const place = () => {
+      const mode = small.matches ? 'narrow' : 'wide', [c, r] = SLOTS[mode][slot % 3], [w, h] = SPAN[mode];
+      tiles.forEach((t, i) => {
+        const on = i === feat;
+        t.classList.toggle('is-feat', on);
+        t.style.gridColumn = on ? `${c} / span ${w}` : '';
+        t.style.gridRow = on ? `${r} / span ${h}` : '';
+        t.setAttribute('aria-current', on ? 'true' : 'false');
+      });
+      const t = tiles[feat];
+      cap.proj.textContent = t.dataset.project; cap.kind.textContent = t.dataset.kind;
+      cap.count.textContent = `${pad(feat + 1)} / ${pad(tiles.length)}`;
     };
-    const goTo = i => {
-      i = Math.max(0, Math.min(items.length - 1, i));
-      const it = items[i];
-      glideTo(it.offsetLeft - parseFloat(getComputedStyle(track).paddingLeft));
-    };
-    document.querySelectorAll('.g-btn').forEach(b => b.addEventListener('click', () => goTo(current() + +b.dataset.dir)));
-    track.addEventListener('keydown', e => { if (e.key === 'ArrowRight') goTo(current() + 1); if (e.key === 'ArrowLeft') goTo(current() - 1); });
 
-    // mouse drag with momentum (touch uses native swipe)
-    let down = false, moved = 0, lastX = 0, lastT = 0, v = 0;
-    const onMove = e => {
-      if (!down) return;
-      const dx = e.clientX - lastX, now = performance.now();
-      track.scrollLeft -= dx; moved += Math.abs(dx);
-      v = dx / Math.max(1, now - lastT); lastX = e.clientX; lastT = now;
-      if (moved > 6) track.classList.add('dragging');
+    const feature = (i, animate = true) => {
+      feat = (i + tiles.length) % tiles.length; slot++;
+      if (animate && window.Flip && !reduce) {
+        const state = Flip.getState(tiles);
+        place();
+        Flip.from(state, { duration: 1.1, ease: 'power3.inOut', absolute: true, zIndex: 2,
+          onEnter: el => gsap.fromTo(el, { opacity: 0 }, { opacity: 1 }) });
+        gsap.fromTo('.m-cap', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .6, delay: .35, ease: 'power2.out' });
+      } else place();
+      restart();
     };
-    const endDrag = () => {
-      if (!down) return; down = false;
-      removeEventListener('pointermove', onMove); removeEventListener('pointerup', endDrag);
-      requestAnimationFrame(() => track.classList.remove('dragging'));
-      if (moved > 6) glideTo(track.scrollLeft - v * 380);   // throw
-    };
-    track.addEventListener('pointerdown', e => {
-      if (e.pointerType !== 'mouse' || e.button !== 0) return;
-      e.preventDefault();                 // no text/image selection while dragging
-      down = true; moved = 0; lastX = e.clientX; lastT = performance.now(); v = 0;
-      cancelAnimationFrame(anim);
-      addEventListener('pointermove', onMove); addEventListener('pointerup', endDrag);
-    });
 
-    // "drag" cursor bubble (desktop)
-    const bubble = document.querySelector('.g-cursor');
-    if (bubble && matchMedia('(hover:hover) and (pointer:fine)').matches) {
-      let bx = 0, by = 0, tx = 0, ty = 0, on = false, raf = null;
-      const loop = () => { bx += (tx - bx) * .2; by += (ty - by) * .2;
-        bubble.style.transform = `translate(${bx}px,${by}px) scale(${on ? (down ? .8 : 1) : 0})`; raf = requestAnimationFrame(loop); };
-      track.addEventListener('pointerenter', e => { on = true; bx = tx = e.clientX; by = ty = e.clientY; bubble.style.opacity = 1; bubble.style.transition = 'opacity .3s'; if (!raf) loop(); });
-      track.addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; });
-      track.addEventListener('pointerleave', () => { on = false; setTimeout(() => { if (!on) { bubble.style.opacity = 0; cancelAnimationFrame(raf); raf = null; } }, 250); });
-    }
+    // timer: a thin accent line fills up, then the next photo takes the stage
+    const running = () => !userPaused && !hoverPaused && visible && !modal.classList.contains('open') && !document.hidden;
+    const restart = () => {
+      if (window.gsap) {
+        timer && timer.kill();
+        timer = gsap.fromTo(timerBar, { scaleX: 0 }, { scaleX: 1, duration: INTERVAL, ease: 'none', paused: !running(),
+          onComplete: () => feature(feat + 1) });
+      } else {
+        clearTimeout(timer); if (running()) timer = setTimeout(() => feature(feat + 1), INTERVAL * 1000);
+      }
+    };
+    const sync = () => { if (window.gsap && timer) running() ? timer.play() : timer.pause(); else restart(); };
+
+    tiles.forEach((t, i) => t.addEventListener('click', () => (i === feat ? openLightbox(i) : feature(i))));
+    document.querySelector('.m-open').addEventListener('click', () => openLightbox(feat));
+    playBtn.addEventListener('click', () => { userPaused = !userPaused; playBtn.textContent = userPaused ? 'Play' : 'Pause'; playBtn.setAttribute('aria-pressed', userPaused); sync(); });
+    if (reduce) { playBtn.textContent = 'Play'; playBtn.setAttribute('aria-pressed', 'true'); }
+    mosaic.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { hoverPaused = true; sync(); } });
+    mosaic.addEventListener('pointerleave', () => { hoverPaused = false; sync(); });
+    document.addEventListener('visibilitychange', sync);
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }, { threshold: 0.35 }).observe(mosaic);
+    small.addEventListener('change', () => place());
+    window.__mosaicSync = sync;                    // lightbox close resumes it
 
     // lightbox with prev/next
     let lbIndex = 0;
     const lbCount = document.querySelector('.lb-count');
     const show = i => {
-      lbIndex = (i + items.length) % items.length;
-      const img = items[lbIndex].querySelector('img');
+      lbIndex = (i + tiles.length) % tiles.length;
+      const img = tiles[lbIndex].querySelector('img'), t = tiles[lbIndex];
       box.classList.add('is-img');
       box.innerHTML = `<img src="${img.src}" alt="${img.alt}">`;
-      lbCount.textContent = `${pad(lbIndex + 1)} / ${pad(items.length)}`;
+      lbCount.innerHTML = `<em style="text-transform:none;letter-spacing:0;font-size:15px">${t.dataset.project}</em> · ${pad(lbIndex + 1)} / ${pad(tiles.length)}`;
     };
-    items.forEach((it, i) => it.addEventListener('click', () => {
-      if (moved > 6) return;          // it was a drag, not a click
-      show(i); modal.classList.add('open', 'gallery-mode'); lenis && lenis.stop();
-    }));
+    function openLightbox(i) { show(i); modal.classList.add('open', 'gallery-mode'); lenis && lenis.stop(); sync(); }
     document.querySelector('.lb-prev').addEventListener('click', e => { e.stopPropagation(); show(lbIndex - 1); });
     document.querySelector('.lb-next').addEventListener('click', e => { e.stopPropagation(); show(lbIndex + 1); });
     addEventListener('keydown', e => {
@@ -125,6 +115,23 @@ const CLIP_EMBED_URL = '';
       if (e.key === 'ArrowRight') show(lbIndex + 1);
       if (e.key === 'ArrowLeft') show(lbIndex - 1);
     });
+
+    place(); restart();
+  }
+
+  /* ---------- Work page: floating bookmarks (show after the title, highlight current section) ---------- */
+  const marks = document.querySelector('.bookmarks');
+  if (marks) {
+    const links = [...marks.querySelectorAll('a')];
+    const secs = links.map(a => document.querySelector(a.getAttribute('href')));
+    const top = document.querySelector('.page-top');
+    const onScroll = () => {
+      marks.classList.toggle('show', top.getBoundingClientRect().bottom < 120);
+      const mid = innerHeight * 0.35;
+      let cur = 0; secs.forEach((s, i) => { if (s.getBoundingClientRect().top < mid) cur = i; });
+      links.forEach((a, i) => a.classList.toggle('active', i === cur));
+    };
+    addEventListener('scroll', onScroll, { passive: true }); onScroll();
   }
 
   if (!(window.gsap && window.ScrollTrigger) || reduce) {
@@ -132,6 +139,7 @@ const CLIP_EMBED_URL = '';
     return;
   }
   gsap.registerPlugin(ScrollTrigger);
+  if (window.Flip) gsap.registerPlugin(Flip);
 
   /* Smooth scroll */
   if (window.Lenis) {
@@ -143,16 +151,14 @@ const CLIP_EMBED_URL = '';
   document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
     const id = a.getAttribute('href'); if (id.length < 2) return e.preventDefault();
     const el = document.querySelector(id); if (!el) return;
-    e.preventDefault(); lenis ? lenis.scrollTo(el, { offset: -80, duration: 1.3 }) : el.scrollIntoView({ behavior: 'smooth' });
+    e.preventDefault();
+    const off = document.querySelector('header').offsetHeight + (marks && matchMedia('(max-width:820px)').matches ? marks.offsetHeight : 0) + 16;
+    lenis ? lenis.scrollTo(el, { offset: -off, duration: 1.3 }) : el.scrollIntoView({ behavior: 'smooth' });
   }));
 
   /* Quiet fade-ups */
   ScrollTrigger.batch('.fade', { start: 'top 92%', once: true,
     onEnter: els => gsap.to(els, { opacity: 1, y: 0, duration: 1.1, ease: 'power2.out', stagger: 0.08 }) });
-
-  /* Gallery entrance: frames slide in with a light stagger */
-  if (document.querySelector('.g-item')) gsap.fromTo('.g-item', { x: 120, opacity: 0 }, { x: 0, opacity: 1, clearProps: 'opacity,transform', duration: 1.3, ease: 'expo.out', stagger: 0.07,
-    scrollTrigger: { trigger: '.gallery', start: 'top 85%', once: true } });
 
   /* One gentle parallax on the main portrait */
   const portrait = document.querySelector('.hero-img img');

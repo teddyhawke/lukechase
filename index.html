@@ -43,26 +43,25 @@
     </div>
   </div>
 
-  <!-- ON SET: stills + behind-the-scenes. Add/remove <figure>s freely; images keep their own shape. -->
+  <!-- ON SET mosaic: one photo featured at a time, the rest reshuffle around it.
+       Add/remove <button class="m-tile"> blocks; --pos sets the crop focus (x% y%). -->
   <section id="on-set" class="gallery-sec">
     <div class="sh fade"><span class="sc mute">On set</span><h2>Stills &amp; <em>behind the scenes</em></h2></div>
-    <div class="gallery fade" aria-label="Stills and behind-the-scenes photos">
-  <div class="g-track" tabindex="0">
-      <figure class="g-item"><img src="assets/gallery/01-777-casino.jpg" alt="Luke leaning over a roulette table under red string lights" loading="lazy"><figcaption class="sc"><span><em>777</em> · Still</span><span>01</span></figcaption></figure>
-      <figure class="g-item"><img src="assets/gallery/02-deadbolt-headphones.jpg" alt="Luke in headphones at a desk lit by a lamp and green glow" loading="lazy"><figcaption class="sc"><span><em>Deadbolt</em> · Still</span><span>02</span></figcaption></figure>
-      <figure class="g-item"><img src="assets/gallery/03-deadbolt-hallway.jpg" alt="Luke in a green flight jacket in a hallway, profile" loading="lazy"><figcaption class="sc"><span><em>Deadbolt</em> · Still</span><span>03</span></figcaption></figure>
-      <figure class="g-item"><img src="assets/gallery/04-deadbolt-rooftop.jpg" alt="Luke on a rooftop looking up at the sky" loading="lazy"><figcaption class="sc"><span><em>Deadbolt</em> · Still</span><span>04</span></figcaption></figure>
-      <figure class="g-item"><img src="assets/gallery/05-deadbolt-scope.jpg" alt="A hand adjusting a vintage oscilloscope" loading="lazy"><figcaption class="sc"><span><em>Deadbolt</em> · Still</span><span>05</span></figcaption></figure>
-      <figure class="g-item"><img src="assets/gallery/06-deadbolt-monitor.jpg" alt="Over-the-shoulder shot of Luke watching a CRT monitor" loading="lazy"><figcaption class="sc"><span><em>Deadbolt</em> · Still</span><span>06</span></figcaption></figure>
-      <figure class="g-item"><img src="assets/gallery/07-giants-jar-treadmill.jpg" alt="Luke mid-stride on a treadmill in front of an LED wall, crew watching" loading="lazy"><figcaption class="sc"><span><em>Giant’s Jar</em> · Behind the scenes</span><span>07</span></figcaption></figure>
-      <figure class="g-item"><img src="assets/gallery/08-giants-jar-greenscreen.jpg" alt="Luke bound in bloodied bandages in front of a green screen" loading="lazy"><figcaption class="sc"><span><em>Giant’s Jar</em> · Behind the scenes</span><span>08</span></figcaption></figure>
-      <figure class="g-item"><img src="assets/gallery/09-giants-jar-on-set.jpg" alt="Luke laughing with two crew members between takes" loading="lazy"><figcaption class="sc"><span><em>Giant’s Jar</em> · Behind the scenes</span><span>09</span></figcaption></figure>
-  </div>
-  <div class="wrap g-ui">
-    <div class="g-progress"><i></i></div>
-    <div class="g-ctrl sc"><span class="g-count mute">01 / 09</span><button class="g-btn" data-dir="-1" aria-label="Previous">←</button><button class="g-btn" data-dir="1" aria-label="Next">→</button></div>
-  </div>
-      <div class="g-cursor" aria-hidden="true">drag</div>
+    <div class="mosaic fade" aria-label="Stills and behind-the-scenes photos">
+      <button class="m-tile" style="--pos:50% 30%" data-project="777" data-kind="Still" aria-label="777 — Luke leaning over a roulette table under red string lights"><img src="assets/gallery/01-777-casino.jpg" alt="Luke leaning over a roulette table under red string lights" loading="lazy" draggable="false"></button>
+      <button class="m-tile" style="--pos:45% 45%" data-project="Deadbolt" data-kind="Still" aria-label="Deadbolt — Luke in headphones at a desk lit by a lamp and green glow"><img src="assets/gallery/02-deadbolt-headphones.jpg" alt="Luke in headphones at a desk lit by a lamp and green glow" loading="lazy" draggable="false"></button>
+      <button class="m-tile" style="--pos:45% 40%" data-project="Giant’s Jar" data-kind="Behind the scenes" aria-label="Giant’s Jar — Luke mid-stride on a treadmill in front of an LED wall, crew watching"><img src="assets/gallery/07-giants-jar-treadmill.jpg" alt="Luke mid-stride on a treadmill in front of an LED wall, crew watching" loading="lazy" draggable="false"></button>
+      <button class="m-tile" style="--pos:62% 45%" data-project="Deadbolt" data-kind="Still" aria-label="Deadbolt — Luke in a green flight jacket in a hallway, profile"><img src="assets/gallery/03-deadbolt-hallway.jpg" alt="Luke in a green flight jacket in a hallway, profile" loading="lazy" draggable="false"></button>
+      <button class="m-tile" style="--pos:55% 40%" data-project="Giant’s Jar" data-kind="Behind the scenes" aria-label="Giant’s Jar — Luke laughing with two crew members between takes"><img src="assets/gallery/09-giants-jar-on-set.jpg" alt="Luke laughing with two crew members between takes" loading="lazy" draggable="false"></button>
+      <button class="m-tile" style="--pos:35% 50%" data-project="Deadbolt" data-kind="Still" aria-label="Deadbolt — Luke on a rooftop looking up at the sky"><img src="assets/gallery/04-deadbolt-rooftop.jpg" alt="Luke on a rooftop looking up at the sky" loading="lazy" draggable="false"></button>
+      <button class="m-tile" style="--pos:62% 40%" data-project="Giant’s Jar" data-kind="Behind the scenes" aria-label="Giant’s Jar — Luke bound in bloodied bandages in front of a green screen"><img src="assets/gallery/08-giants-jar-greenscreen.jpg" alt="Luke bound in bloodied bandages in front of a green screen" loading="lazy" draggable="false"></button>
+      <button class="m-tile" style="--pos:60% 55%" data-project="Deadbolt" data-kind="Still" aria-label="Deadbolt — A hand adjusting a vintage oscilloscope"><img src="assets/gallery/05-deadbolt-scope.jpg" alt="A hand adjusting a vintage oscilloscope" loading="lazy" draggable="false"></button>
+      <button class="m-tile" style="--pos:40% 55%" data-project="Deadbolt" data-kind="Still" aria-label="Deadbolt — Over-the-shoulder shot of Luke watching a CRT monitor"><img src="assets/gallery/06-deadbolt-monitor.jpg" alt="Over-the-shoulder shot of Luke watching a CRT monitor" loading="lazy" draggable="false"></button>
+    </div>
+    <div class="m-bar">
+      <p class="m-cap"><em class="m-proj">777</em> <span class="sc mute m-kind">Still</span></p>
+      <div class="m-ctrl sc"><span class="m-count mute">01 / 09</span><button class="m-play link" aria-pressed="false">Pause</button><button class="m-open link accent">View larger</button></div>
+      <div class="m-timer"><i></i></div>
     </div>
   </section>
 
@@ -80,9 +79,9 @@
     <div class="upcoming">
       <span class="sc mute fade">Upcoming</span>
       <div class="up-card fade">
-        <span class="sc when">Stage · January 2027</span>
+        <span class="sc when">Stage · January–February 2027</span>
         <h3>Dog Sees God: Confessions of a Teenage Blockhead</h3>
-        <p><span class="role">CB</span> · Dir. Holly Gagnier. Now in rehearsal. Venue and dates to be announced.</p>
+        <p><span class="role">CB</span> · Dir. Holly Gagnier · Playhouse West, North Hollywood. Now in rehearsal.</p>
       </div>
     </div>
     <div class="body-grid"><div></div><a class="next fade" href="work.html">See all work <span>→</span></a></div>
@@ -106,6 +105,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/Flip.min.js"></script>
 <script src="https://unpkg.com/lenis@1.3.27/dist/lenis.min.js"></script>
 <script src="main.js"></script>
 </body>
