@@ -1,12 +1,16 @@
 # Luke Chase — Official Site
 
-Static site (HTML + GSAP + Lenis via CDN). No build step.
+Static site: plain HTML/CSS with GSAP + Lenis from a CDN. No build step. Served by GitHub Pages from `main` (root).
 
-## Updating content
-- **Photos:** replace files in `assets/` keeping the same names (`headshot-1.jpg` … `headshot-4.jpg`, `reel-poster.jpg`). Headshots are 4:5, the reel poster is 16:9.
-- **Text, credits, reps:** edit `index.html` directly — every section is plain HTML.
-- **Accent color:** change `--accent` at the top of the `<style>` block.
-- **Reel:** paste the YouTube/Vimeo embed into the reel modal in the script at the bottom of `index.html`.
+## Files
+- `index.html` — opening page: mission line, photo, contact, reel, upcoming project
+- `work.html` — credits grouped by Film / Stage / Writing, plus Upcoming
+- `about.html` — bio, stats, training, skills
+- `style.css` — all styling (change `--accent` at the top to recolor the site)
+- `main.js` — reel player + scroll animations
+- `assets/` — photos
 
-## Hosting
-Served by GitHub Pages from the `main` branch root.
+## Common updates
+- **Photos:** replace `assets/headshot-2.jpg` (home) and `assets/headshot-1.jpg` (about), 4:5 ratio. `assets/reel-poster.jpg` is 16:9.
+- **Reel:** set `CLIP_EMBED_URL` at the top of `main.js` (YouTube `https://www.youtube.com/embed/ID` or Vimeo `https://player.vimeo.com/video/ID`). The "Reel coming soon" placeholder turns into a play button automatically.
+- **Credits:** in `work.html`, copy an `<article class="credit">` block. Fields: title, year, role, director/production, one-line context.
