@@ -57,7 +57,8 @@ const CLIP_EMBED_URL = '';
 
   /* One gentle parallax on the main portrait */
   const portrait = document.querySelector('.hero-img img');
-  if (portrait) gsap.fromTo(portrait, { scale: 1.08 }, { scale: 1, yPercent: 4, ease: 'none',
+  // Starts at the photo's full frame (no crop) and only eases in slightly as you scroll away
+  if (portrait) gsap.fromTo(portrait, { scale: 1 }, { scale: 1.04, ease: 'none',
     scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
 
   addEventListener('load', () => ScrollTrigger.refresh());
