@@ -11,6 +11,6 @@ Static site: plain HTML/CSS with GSAP + Lenis from a CDN. No build step. Served 
 - `assets/` — photos
 
 ## Common updates
-- **Photos:** replace `assets/headshot-2.jpg` (home) and `assets/headshot-1.jpg` (about), 4:5 ratio. `assets/reel-poster.jpg` is 16:9.
+- **Photos:** replace `assets/headshot-home.jpg` and `assets/headshot-about.jpg` (2:3 portrait, ~1200px wide). `assets/reel-poster.jpg` is 16:9.
 - **Reel:** set `CLIP_EMBED_URL` at the top of `main.js` (YouTube `https://www.youtube.com/embed/ID` or Vimeo `https://player.vimeo.com/video/ID`). The "Reel coming soon" placeholder turns into a play button automatically.
 - **Credits:** in `work.html`, copy an `<article class="credit">` block. Fields: title, year, role, director/production, one-line context.
