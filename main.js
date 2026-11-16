@@ -41,7 +41,7 @@ const CLIP_EMBED_URL = '';
     const small = matchMedia('(max-width:760px)');
     // where the featured tile sits: desktop slides left → right → centre; phones top → middle → bottom
     const SLOTS = { wide: [[1, 1], [3, 1], [2, 1]], narrow: [[1, 1], [1, 2], [1, 3]] };
-    const SPAN = { wide: [4, 4], narrow: [4, 2] };
+    const SPAN = { wide: [4, 4], narrow: [4, 4] };
     const cap = { proj: document.querySelector('.m-proj'), kind: document.querySelector('.m-kind'), count: document.querySelector('.m-count') };
     const timerBar = document.querySelector('.m-timer i');
     const playBtn = document.querySelector('.m-play');

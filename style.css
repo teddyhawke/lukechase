@@ -161,9 +161,8 @@ section{padding:12vh 0;border-top:1px solid var(--rule);scroll-margin-top:84px}
 .m-timer i{position:absolute;inset:0 auto 0 0;width:100%;background:var(--accent);transform-origin:left;transform:scaleX(0)}
 
 @media(max-width:760px){
-  /* 4 columns on phones: featured spans the full width, 2 rows tall */
-  .mosaic{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);aspect-ratio:5/4}
-  .m-tile.is-feat{grid-column:1 / span 4;grid-row:1 / span 2}
+  /* phones: a tall 3:4 block (like an IG portrait post). 4×6 grid: featured spans full width × 4 rows, 8 tiles fill 2 rows */
+  .mosaic{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(6,1fr);aspect-ratio:3/4;max-height:calc(100svh - 170px);margin:0 auto}
   .m-bar{grid-template-columns:1fr}
 }
 
