@@ -126,7 +126,8 @@ const CLIP_EMBED_URL = '';
     const secs = links.map(a => document.querySelector(a.getAttribute('href')));
     const top = document.querySelector('.page-top');
     const onScroll = () => {
-      marks.classList.toggle('show', top.getBoundingClientRect().bottom < 120);
+      const foot = document.querySelector('footer');
+      marks.classList.toggle('show', top.getBoundingClientRect().bottom < 120 && foot.getBoundingClientRect().top > innerHeight * 0.75);
       const mid = innerHeight * 0.35;
       let cur = 0; secs.forEach((s, i) => { if (s.getBoundingClientRect().top < mid) cur = i; });
       links.forEach((a, i) => a.classList.toggle('active', i === cur));
