@@ -43,6 +43,29 @@
     </div>
   </div>
 
+  <!-- ON SET: stills + behind-the-scenes. Add/remove <figure>s freely; images keep their own shape. -->
+  <section id="on-set" class="gallery-sec">
+    <div class="sh fade"><span class="sc mute">On set</span><h2>Stills &amp; <em>behind the scenes</em></h2></div>
+    <div class="gallery fade" aria-label="Stills and behind-the-scenes photos">
+  <div class="g-track" tabindex="0">
+      <figure class="g-item"><img src="assets/gallery/01-777-casino.jpg" alt="Luke leaning over a roulette table under red string lights" loading="lazy"><figcaption class="sc"><span><em>777</em> · Still</span><span>01</span></figcaption></figure>
+      <figure class="g-item"><img src="assets/gallery/02-deadbolt-headphones.jpg" alt="Luke in headphones at a desk lit by a lamp and green glow" loading="lazy"><figcaption class="sc"><span><em>Deadbolt</em> · Still</span><span>02</span></figcaption></figure>
+      <figure class="g-item"><img src="assets/gallery/03-deadbolt-hallway.jpg" alt="Luke in a green flight jacket in a hallway, profile" loading="lazy"><figcaption class="sc"><span><em>Deadbolt</em> · Still</span><span>03</span></figcaption></figure>
+      <figure class="g-item"><img src="assets/gallery/04-deadbolt-rooftop.jpg" alt="Luke on a rooftop looking up at the sky" loading="lazy"><figcaption class="sc"><span><em>Deadbolt</em> · Still</span><span>04</span></figcaption></figure>
+      <figure class="g-item"><img src="assets/gallery/05-deadbolt-scope.jpg" alt="A hand adjusting a vintage oscilloscope" loading="lazy"><figcaption class="sc"><span><em>Deadbolt</em> · Still</span><span>05</span></figcaption></figure>
+      <figure class="g-item"><img src="assets/gallery/06-deadbolt-monitor.jpg" alt="Over-the-shoulder shot of Luke watching a CRT monitor" loading="lazy"><figcaption class="sc"><span><em>Deadbolt</em> · Still</span><span>06</span></figcaption></figure>
+      <figure class="g-item"><img src="assets/gallery/07-giants-jar-treadmill.jpg" alt="Luke mid-stride on a treadmill in front of an LED wall, crew watching" loading="lazy"><figcaption class="sc"><span><em>Giant’s Jar</em> · Behind the scenes</span><span>07</span></figcaption></figure>
+      <figure class="g-item"><img src="assets/gallery/08-giants-jar-greenscreen.jpg" alt="Luke bound in bloodied bandages in front of a green screen" loading="lazy"><figcaption class="sc"><span><em>Giant’s Jar</em> · Behind the scenes</span><span>08</span></figcaption></figure>
+      <figure class="g-item"><img src="assets/gallery/09-giants-jar-on-set.jpg" alt="Luke laughing with two crew members between takes" loading="lazy"><figcaption class="sc"><span><em>Giant’s Jar</em> · Behind the scenes</span><span>09</span></figcaption></figure>
+  </div>
+  <div class="wrap g-ui">
+    <div class="g-progress"><i></i></div>
+    <div class="g-ctrl sc"><span class="g-count mute">01 / 09</span><button class="g-btn" data-dir="-1" aria-label="Previous">←</button><button class="g-btn" data-dir="1" aria-label="Next">→</button></div>
+  </div>
+      <div class="g-cursor" aria-hidden="true">drag</div>
+    </div>
+  </section>
+
   <!-- REEL: set CLIP_EMBED_URL in main.js once it exists; the play button turns on automatically -->
   <section id="reel">
     <div class="sh fade"><span class="sc mute">Reel</span><h2>The <em>reel</em></h2></div>
@@ -76,6 +99,9 @@
 <div class="modal" id="modal" data-lenis-prevent>
   <button class="modal-close sc">Close</button>
   <div class="modal-box" id="modal-box"></div>
+  <button class="lb-nav lb-prev sc" aria-label="Previous photo">←</button>
+  <button class="lb-nav lb-next sc" aria-label="Next photo">→</button>
+  <span class="lb-count sc mute"></span>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/gsap.min.js"></script>
